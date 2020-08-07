@@ -1,8 +1,8 @@
 from bot.bot import Bot
 from bot.handler import MessageHandler, BotButtonCommandHandler
 import json
+import random
 import Update
-from random import choice
 TOKEN = "001.2415440181.2901955096:754789318"
 
 bot = Bot(token=TOKEN)
@@ -12,6 +12,10 @@ icq_beta = Update.Beta(Update.CallBacksTexts.icq)
 agent_release = Update.Release(Update.CallBacksTexts.agent)
 icq_release = Update.Release(Update.CallBacksTexts.icq)
 myteam_release = Update.Release(Update.CallBacksTexts.myteam)
+
+def responsible():
+    testers = ("741451770", "yulichka_mitryaeva@mail.ru")
+    return random.sample(list(testers), 2)
 
 def get_beta_main_text(agent, icq):
     text = 'Уже протестированы беты:'
@@ -342,9 +346,10 @@ def message_cb(bot, event):
         agent_beta = Update.Beta(Update.CallBacksTexts.agent)
         global icq_beta
         icq_beta = Update.Beta(Update.CallBacksTexts.icq)
+        test_user = responsible()
         bot.send_text(
             chat_id=event.from_chat,
-            text='Начинаем тестирование беты!',
+            text=f'@[{test_user[0]}] и @[{test_user[1]}] \n Начинаем тестирование беты! ',
             inline_keyboard_markup="{}".format(json.dumps(
                 get_beta_main_buttons(agent_beta, icq_beta)
             )))
@@ -355,9 +360,10 @@ def message_cb(bot, event):
         icq_release = Update.Release(Update.CallBacksTexts.icq)
         global myteam_release
         myteam_release = Update.Release(Update.CallBacksTexts.myteam)
+        test_user = responsible()
         bot.send_text(
             chat_id=event.from_chat,
-            text='Начинаем тестирование релиза!',
+            text=f'@[{test_user[0]}] и @[{test_user[1]}] \n Начинаем тестирование релиза! ',
             inline_keyboard_markup="{}".format(json.dumps(
                 get_release_main_buttons(agent_release, myteam_release, icq_release)
             )))
